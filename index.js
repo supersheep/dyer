@@ -38,20 +38,33 @@ Dyer.prototype.dye = function(elem, opt){
     }
     var film = document.createElement("div");
 
-    var offset = this._getOffset(elem);
 
     film.style.position = "absolute";
     film.style.backgroundColor = this.color;
     film.style.opacity = 0.8;
+
+    this.reflow(elem);
+    film.style.pointerEvents = "none";
+    film.style.zIndex = 999;
+    this.position(elem,film);
+    film._elem = elem;
+    this.films.push(film);
+    this.doc.body.appendChild(film);
+}
+
+Dyer.prototype.position = function(elem,film){
+    var offset = this._getOffset(elem);
     film.style.width = elem.offsetWidth + "px";
     film.style.height = elem.offsetHeight + "px";
     film.style.top = offset.top + "px";
     film.style.left = offset.left + "px";
-    film.style.pointerEvents = "none";
-    film.style.zIndex = 999;
+}
 
-    this.films.push(film);
-    this.doc.body.appendChild(film);
+Dyer.prototype.reflow = function(){
+    var self = this;
+    this.films.forEach(function(film){
+        film._elem && self.position(film._elem, film);
+    });
 }
 
 Dyer.prototype.getDoc = function(){
