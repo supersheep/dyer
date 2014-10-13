@@ -68,8 +68,8 @@ Dyer.prototype.position = function(elem,film){
     var scrollParent = this._getScrollParent(elem);
     film.style.width = elem.offsetWidth + "px";
     film.style.height = elem.offsetHeight + "px";
-    film.style.top = offset.top - scrollParent.scrollTop + "px";
-    film.style.left = offset.left - scrollParent.scrollLeft + "px";
+    film.style.top = offset.top - (scrollParent == this.doc.body ? 0 : scrollParent.scrollTop) + "px";
+    film.style.left = offset.left - (scrollParent == this.doc.body ? 0 : scrollParent.scrollLeft) + "px";
 }
 
 Dyer.prototype.reflow = function(){
