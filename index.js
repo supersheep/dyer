@@ -52,12 +52,24 @@ Dyer.prototype.dye = function(elem, opt){
     this.doc.body.appendChild(film);
 }
 
+Dyer.prototype._getScrollParent = function(elem){
+    var parent = elem;
+    while(parent && parent.nodeType == 1 &&  parent !== this.doc.body){
+        if(parent.scrollHeight > parent.clientHeight){
+            return parent;
+        }
+        parent = parent.parentNode;
+    }
+    return this.doc.body;
+}
+
 Dyer.prototype.position = function(elem,film){
     var offset = this._getOffset(elem);
+    var scrollParent = this._getScrollParent(elem);
     film.style.width = elem.offsetWidth + "px";
     film.style.height = elem.offsetHeight + "px";
-    film.style.top = offset.top + "px";
-    film.style.left = offset.left + "px";
+    film.style.top = offset.top - scrollParent.scrollTop + "px";
+    film.style.left = offset.left - scrollParent.scrollLeft + "px";
 }
 
 Dyer.prototype.reflow = function(){
@@ -66,7 +78,6 @@ Dyer.prototype.reflow = function(){
         film._elem && self.position(film._elem, film);
     });
 }
-
 Dyer.prototype.getDoc = function(){
     return this.doc;
 }
